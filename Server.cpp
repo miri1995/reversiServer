@@ -49,7 +49,7 @@ void Server::handleClient(int clientSocket) {
     int arg1, arg2;
     char op;
     while (true) {
-// Read new exercise arguments
+        // Read new exercise arguments
         int n = read(clientSocket, &arg1, sizeof(arg1));
         if (n == -1) {
             cout << "Error reading arg1" << endl;
@@ -70,19 +70,26 @@ void Server::handleClient(int clientSocket) {
             return;
         }
         cout << "Got exercise: " << arg1 << op << arg2 << endl;
-        int result = calc(arg1, op, arg2);
         // Write the result back to the client
-        n = write(clientSocket, &result, sizeof(result));
+        n = write(clientSocket, &arg1, sizeof(arg1));
         if (n == -1) {
-            cout << "Error writing to socket"<< endl;
+            cout << "Error writing to socket1"<< endl;
+            return;
+        }
+        n = write(clientSocket, &op, sizeof(op));
+        if (n == -1) {
+            cout << "Error writing to socket2"<< endl;
+            return;
+        }
+        n = write(clientSocket, &arg2, sizeof(arg2));
+        if (n == -1) {
+            cout << "Error writing to socket3"<< endl;
             return;
         }
     }
 }
 
-int Server::calc(int arg1, const char op, int arg2) const {
 
-}
 
 void Server::stop() {
     close(serverSocket);

@@ -1,6 +1,3 @@
-//
-// Created by miri on 03/12/17.
-//
 
 #include <sys/socket.h>
 #include "Server.h"

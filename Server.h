@@ -1,6 +1,4 @@
-//
-// Created by miri on 03/12/17.
-//
+
 
 #ifndef REVERSISERVER_SERVER_H
 #define REVERSISERVER_SERVER_H

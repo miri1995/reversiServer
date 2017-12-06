@@ -39,13 +39,19 @@ void Server::start() {
         if(clientSocket==-1){
             throw "Error on accept";
         }
-        handleClient(clientSocket);
+        cout << "Waiting for client connections..." << endl;
+        int clientSocket2 = accept(serverSocket, (struct sockaddr *)&clientAddress, &clientAddressLen);
+        cout << "Client connected" << endl;
+        if(clientSocket2==-1){
+            throw "Error on accept";
+        }
+        handleClient(clientSocket,clientSocket2);
         close(clientSocket);
     }
 }
 
 
-void Server::handleClient(int clientSocket) {
+void Server::handleClient(int clientSocket,int clientSocket2) {
     int arg1, arg2;
     char op;
     while (true) {
@@ -59,36 +65,78 @@ void Server::handleClient(int clientSocket) {
             cout << "Client disconnected" << endl;
             return;
         }
-        n = read(clientSocket, &op, sizeof(op));
+        /*n = read(clientSocket, &op, sizeof(op));
         if (n == -1) {
             cout << "Error reading operator" << endl;
             return;
-        }
+        }*/
         n = read(clientSocket, &arg2, sizeof(arg2));
         if (n == -1) {
             cout << "Error reading arg2" << endl;
             return;
         }
-        cout << "Got exercise: " << arg1 << op << arg2 << endl;
+        cout << "Got Choose: " << arg1 << "," << arg2 << endl;
         // Write the result back to the client
         n = write(clientSocket, &arg1, sizeof(arg1));
         if (n == -1) {
             cout << "Error writing to socket1"<< endl;
             return;
         }
-        n = write(clientSocket, &op, sizeof(op));
+       /* n = write(clientSocket, &op, sizeof(op));
         if (n == -1) {
             cout << "Error writing to socket2"<< endl;
             return;
-        }
+        }*/
         n = write(clientSocket, &arg2, sizeof(arg2));
         if (n == -1) {
             cout << "Error writing to socket3"<< endl;
             return;
         }
+
+
+        int arg3, arg4;
+        // Read new exercise arguments
+        int n1 = read(clientSocket2, &arg3, sizeof(arg3));
+        if (n1 == -1) {
+            cout << "Error reading arg3" << endl;
+            return;
+        }
+        if (n1 == 0) {
+            cout << "Client disconnected" << endl;
+            return;
+        }
+        /*n = read(clientSocket, &op, sizeof(op));
+        if (n == -1) {
+            cout << "Error reading operator" << endl;
+            return;
+        }*/
+        n1 = read(clientSocket2, &arg4, sizeof(arg4));
+        if (n1 == -1) {
+            cout << "Error reading arg4" << endl;
+            return;
+        }
+        cout << "Got exercise: " << arg3 << op << arg4 << endl;
+        // Write the result back to the client
+        n1 = write(clientSocket2, &arg3, sizeof(arg3));
+        if (n1 == -1) {
+            cout << "Error writing to socket1"<< endl;
+            return;
+        }
+        /* n = write(clientSocket, &op, sizeof(op));
+         if (n == -1) {
+             cout << "Error writing to socket2"<< endl;
+             return;
+         }*/
+        n1 = write(clientSocket2, &arg4, sizeof(arg4));
+        if (n1 == -1) {
+            cout << "Error writing to socket3"<< endl;
+            return;
+        }
+
+
+
     }
 }
-
 
 
 void Server::stop() {

@@ -47,6 +47,7 @@ void Server::start() {
         }
         handleClient(clientSocket,clientSocket2);
         close(clientSocket);
+        close(clientSocket2);
     }
 }
 
@@ -115,7 +116,7 @@ void Server::handleClient(int clientSocket,int clientSocket2) {
             cout << "Error reading arg4" << endl;
             return;
         }
-        cout << "Got exercise: " << arg3 << op << arg4 << endl;
+        cout << "Got Choose: " << arg3 << "," << arg4 << endl;
         // Write the result back to the client
         n1 = write(clientSocket2, &arg3, sizeof(arg3));
         if (n1 == -1) {
@@ -132,7 +133,6 @@ void Server::handleClient(int clientSocket,int clientSocket2) {
             cout << "Error writing to socket3"<< endl;
             return;
         }
-
 
 
     }

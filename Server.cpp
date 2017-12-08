@@ -1,4 +1,3 @@
-
 #include <sys/socket.h>
 #include "Server.h"
 #include <netinet/in.h>
@@ -32,109 +31,134 @@ void Server::start() {
     struct sockaddr_in clientAddress;
     socklen_t clientAddressLen;
 
-    while(true){
+    while(true) {
         cout << "Waiting for client connections..." << endl;
-        int clientSocket = accept(serverSocket, (struct sockaddr *)&clientAddress, &clientAddressLen);
+        int clientSocket = accept(serverSocket, (struct sockaddr *) &clientAddress, &clientAddressLen);
         cout << "Client connected" << endl;
-        if(clientSocket==-1){
+        cout << "Waiting for other player to join..." << endl;
+        if (clientSocket == -1) {
             throw "Error on accept";
         }
         cout << "Waiting for client connections..." << endl;
-        int clientSocket2 = accept(serverSocket, (struct sockaddr *)&clientAddress, &clientAddressLen);
+        int clientSocket2 = accept(serverSocket, (struct sockaddr *) &clientAddress, &clientAddressLen);
         cout << "Client connected" << endl;
-        if(clientSocket2==-1){
+        if (clientSocket2 == -1) {
             throw "Error on accept";
         }
-        handleClient(clientSocket,clientSocket2);
+        char x = '1';
+        char o = '2';
+        int message = write(clientSocket, &x, sizeof(x));
+        if (message == -1) {
+            cout << "Error writing to socket" << endl;
+            return;
+        }
+        int message2 = write(clientSocket2, &o, sizeof(o));
+        if (message2 == -1) {
+            cout << "Error writing to socket" << endl;
+            return;
+        }
+
+        //  while (true) {
+        handleClient(clientSocket, clientSocket2);
         close(clientSocket);
         close(clientSocket2);
+        //  }
     }
+
 }
 
 
 void Server::handleClient(int clientSocket,int clientSocket2) {
     int arg1, arg2;
-    char op;
+    char *noMove;
+    char *end;
+    int player = 1;
+
+
     while (true) {
-        // Read new exercise arguments
-        int n = read(clientSocket, &arg1, sizeof(arg1));
-        if (n == -1) {
-            cout << "Error reading arg1" << endl;
-            return;
-        }
-        if (n == 0) {
-            cout << "Client disconnected" << endl;
-            return;
-        }
-        /*n = read(clientSocket, &op, sizeof(op));
-        if (n == -1) {
-            cout << "Error reading operator" << endl;
-            return;
-        }*/
-        n = read(clientSocket, &arg2, sizeof(arg2));
-        if (n == -1) {
-            cout << "Error reading arg2" << endl;
-            return;
-        }
-        cout << "Got Choose: " << arg1 << "," << arg2 << endl;
-        // Write the result back to the client
-        n = write(clientSocket, &arg1, sizeof(arg1));
-        if (n == -1) {
-            cout << "Error writing to socket1"<< endl;
-            return;
-        }
-       /* n = write(clientSocket, &op, sizeof(op));
-        if (n == -1) {
-            cout << "Error writing to socket2"<< endl;
-            return;
-        }*/
-        n = write(clientSocket, &arg2, sizeof(arg2));
-        if (n == -1) {
-            cout << "Error writing to socket3"<< endl;
-            return;
+        if (player % 2 == 1) {
+            // Read new exercise arguments
+            int n = read(clientSocket, &arg1, sizeof(arg1));
+            if (n == -1) {
+                cout << "Error reading arg1" << endl;
+                return;
+            }
+            if (n == 0) {
+                cout << "Client disconnected" << endl;
+                return;
+            }
+            n = read(clientSocket, &arg2, sizeof(arg2));
+            if (n == -1) {
+                cout << "Error reading arg2" << endl;
+                return;
+            }
+
+
+            cout << "Got Choose: " << arg1 << "," << arg2 << endl;
+            // Write the result back to the client
+            n = write(clientSocket2, &arg1, sizeof(arg1));
+            if (n == -1) {
+                cout << "Error writing to socket1" << endl;
+                return;
+            }
+            n = write(clientSocket2, &arg2, sizeof(arg2));
+            if (n == -1) {
+                cout << "Error writing to socket3" << endl;
+                return;
+            }
+            /* if (arg1 == -2 && arg2 == -2){
+                 stop();
+             }*/
+            /* if (arg1 == 0 && arg2 == 0) {
+                 continue;
+             }*/
+
+
+        } else {
+            // Read new exercise arguments
+            int n = read(clientSocket2, &arg1, sizeof(arg1));
+            if (n == -1) {
+                cout << "Error reading arg1" << endl;
+                return;
+            }
+            if (n == 0) {
+                cout << "Client disconnected" << endl;
+                return;
+            }
+            n = read(clientSocket2, &arg2, sizeof(arg2));
+            if (n == -1) {
+                cout << "Error reading arg2" << endl;
+                return;
+            }
+
+
+            cout << "Got Choose: " << arg1 << "," << arg2 << endl;
+            // Write the result back to the client
+            n = write(clientSocket, &arg1, sizeof(arg1));
+            if (n == -1) {
+                cout << "Error writing to socket1" << endl;
+                return;
+            }
+            n = write(clientSocket, &arg2, sizeof(arg2));
+            if (n == -1) {
+                cout << "Error writing to socket3" << endl;
+                return;
+            }
+            /* if (arg1 == -2 && arg2 == -2){
+                 stop();
+             }*/
+            /*  if (arg1 == 0 && arg2 == 0) {
+                  continue;
+
+              }*/
+
         }
 
 
-        int arg3, arg4;
-        // Read new exercise arguments
-        int n1 = read(clientSocket2, &arg3, sizeof(arg3));
-        if (n1 == -1) {
-            cout << "Error reading arg3" << endl;
-            return;
-        }
-        if (n1 == 0) {
-            cout << "Client disconnected" << endl;
-            return;
-        }
-        /*n = read(clientSocket, &op, sizeof(op));
-        if (n == -1) {
-            cout << "Error reading operator" << endl;
-            return;
-        }*/
-        n1 = read(clientSocket2, &arg4, sizeof(arg4));
-        if (n1 == -1) {
-            cout << "Error reading arg4" << endl;
-            return;
-        }
-        cout << "Got Choose: " << arg3 << "," << arg4 << endl;
-        // Write the result back to the client
-        n1 = write(clientSocket2, &arg3, sizeof(arg3));
-        if (n1 == -1) {
-            cout << "Error writing to socket1"<< endl;
-            return;
-        }
-        /* n = write(clientSocket, &op, sizeof(op));
-         if (n == -1) {
-             cout << "Error writing to socket2"<< endl;
-             return;
-         }*/
-        n1 = write(clientSocket2, &arg4, sizeof(arg4));
-        if (n1 == -1) {
-            cout << "Error writing to socket3"<< endl;
-            return;
-        }
-
-
+        player++;
+        if (arg1 == -2 && arg2 == -2) {
+            stop();
+        }//end while
     }
 }
 

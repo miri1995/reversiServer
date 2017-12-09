@@ -9,8 +9,31 @@ private:
     void handleClient (int clientSocket,int clientSocket2);
 
 public:
+    /**********************************
+    * constructor
+    *
+    * input: port
+    * output: none
+    **********************************/
     Server(int port);
+
+    /**********************************
+    * name: start
+     *      connect to 2 sockets (2 clients)
+     *      and go to handleClient function.
+    *
+    * input: none
+    * output: none
+    **********************************/
     void start();
+
+    /**********************************
+    * name: stop
+     *      close the server socket.
+    *
+    * input: none
+    * output: none
+    **********************************/
     void stop();
 };
 

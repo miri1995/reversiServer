@@ -47,22 +47,23 @@ void Server::start() {
         }
         char x = '1';
         char o = '2';
+        //write to player x that he is 1
         int message = write(clientSocket, &x, sizeof(x));
         if (message == -1) {
             cout << "Error writing to socket" << endl;
             return;
         }
+        //write to player o that he is 2
         int message2 = write(clientSocket2, &o, sizeof(o));
         if (message2 == -1) {
             cout << "Error writing to socket" << endl;
             return;
         }
 
-        //  while (true) {
         handleClient(clientSocket, clientSocket2);
         close(clientSocket);
         close(clientSocket2);
-        //  }
+        cout<<"hh"<<endl;
     }
 
 }
@@ -70,14 +71,12 @@ void Server::start() {
 
 void Server::handleClient(int clientSocket,int clientSocket2) {
     int arg1, arg2;
-    char *noMove;
-    char *end;
     int player = 1;
 
-
     while (true) {
+        //if the player 1(=x) play
         if (player % 2 == 1) {
-            // Read new exercise arguments
+            // Read new choice arguments
             int n = read(clientSocket, &arg1, sizeof(arg1));
             if (n == -1) {
                 cout << "Error reading arg1" << endl;
@@ -95,7 +94,7 @@ void Server::handleClient(int clientSocket,int clientSocket2) {
 
 
             cout << "Got Choose: " << arg1 << "," << arg2 << endl;
-            // Write the result back to the client
+            // Write the choose back to the client
             n = write(clientSocket2, &arg1, sizeof(arg1));
             if (n == -1) {
                 cout << "Error writing to socket1" << endl;
@@ -106,16 +105,10 @@ void Server::handleClient(int clientSocket,int clientSocket2) {
                 cout << "Error writing to socket3" << endl;
                 return;
             }
-            /* if (arg1 == -2 && arg2 == -2){
-                 stop();
-             }*/
-            /* if (arg1 == 0 && arg2 == 0) {
-                 continue;
-             }*/
-
-
-        } else {
-            // Read new exercise arguments
+        }
+            //if the player 2(=o) play
+        else {
+            // Read new choice arguments
             int n = read(clientSocket2, &arg1, sizeof(arg1));
             if (n == -1) {
                 cout << "Error reading arg1" << endl;
@@ -131,9 +124,10 @@ void Server::handleClient(int clientSocket,int clientSocket2) {
                 return;
             }
 
-
             cout << "Got Choose: " << arg1 << "," << arg2 << endl;
-            // Write the result back to the client
+
+
+            // Write the choose back to the client
             n = write(clientSocket, &arg1, sizeof(arg1));
             if (n == -1) {
                 cout << "Error writing to socket1" << endl;
@@ -144,22 +138,14 @@ void Server::handleClient(int clientSocket,int clientSocket2) {
                 cout << "Error writing to socket3" << endl;
                 return;
             }
-            /* if (arg1 == -2 && arg2 == -2){
-                 stop();
-             }*/
-            /*  if (arg1 == 0 && arg2 == 0) {
-                  continue;
-
-              }*/
-
         }
-
-
         player++;
+        //if to two players didn't have move -end game
         if (arg1 == -2 && arg2 == -2) {
             stop();
-        }//end while
-    }
+            cout<<"Game over"<<endl;
+        }
+    }//end while
 }
 
 

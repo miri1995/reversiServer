@@ -1,11 +1,24 @@
-
 #include <stdlib.h>
 #include "Server.h"
 #include <iostream>
+#include <fstream>
+
 using namespace std;
 
+
+int readFromTextFile(){
+    int port;
+    ifstream infile;
+    infile.open("../server.txt");
+    infile >> port;
+    infile.close();
+    cout<<"port:"<<port<<endl;
+    return port;
+}
+
 int main() {
-    Server server(8000);
+    int port;
+    Server server(readFromTextFile());
     try {
         server.start();
     }

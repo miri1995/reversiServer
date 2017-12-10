@@ -5,6 +5,7 @@
 #include <string.h>
 #include <iostream>
 #include <stdio.h>
+#include <poll.h>
 
 using namespace std;
 #define MAX_CONNECTED_CLIENTS 10
@@ -62,11 +63,28 @@ void Server::start() {
 
         handleClient(clientSocket, clientSocket2);
         close(clientSocket);
-        close(clientSocket2);
-        cout<<"hh"<<endl;
+       close(clientSocket2);
+       // cout<<"hh"<<endl;
     }
 
 }
+
+/*bool Server::isClientClosed(int clientSocket){
+    pollfd pdf;
+    pdf.fd = clientSocket;
+    pdf.events = POLLIN | POLLHUP | POLLRDNORM;
+    pdf.revents = 0;
+    while(pdf.revents==0){
+        if(poll(&pdf,1,100) > 0){
+            char buffer[32];
+            if(recv(clientSocket,buffer,sizeof(buffer),MSG_PEEK | MSG_DONTWAIT)==0){
+                return true;
+            }
+        }
+    }
+    return false;
+}*/
+
 
 
 void Server::handleClient(int clientSocket,int clientSocket2) {
@@ -95,16 +113,18 @@ void Server::handleClient(int clientSocket,int clientSocket2) {
 
             cout << "Got Choose: " << arg1 << "," << arg2 << endl;
             // Write the choose back to the client
-            n = write(clientSocket2, &arg1, sizeof(arg1));
-            if (n == -1) {
-                cout << "Error writing to socket1" << endl;
-                return;
-            }
-            n = write(clientSocket2, &arg2, sizeof(arg2));
-            if (n == -1) {
-                cout << "Error writing to socket3" << endl;
-                return;
-            }
+
+                n = write(clientSocket2, &arg1, sizeof(arg1));
+                if (n == -1) {
+                    cout << "Error writing to socket1" << endl;
+                    return;
+                }
+                n = write(clientSocket2, &arg2, sizeof(arg2));
+                if (n == -1) {
+                    cout << "Error writing to socket3" << endl;
+                    return;
+                }
+
         }
             //if the player 2(=o) play
         else {
@@ -127,23 +147,34 @@ void Server::handleClient(int clientSocket,int clientSocket2) {
             cout << "Got Choose: " << arg1 << "," << arg2 << endl;
 
 
-            // Write the choose back to the client
-            n = write(clientSocket, &arg1, sizeof(arg1));
-            if (n == -1) {
-                cout << "Error writing to socket1" << endl;
-                return;
-            }
-            n = write(clientSocket, &arg2, sizeof(arg2));
-            if (n == -1) {
-                cout << "Error writing to socket3" << endl;
-                return;
-            }
+                // Write the choose back to the client
+                n = write(clientSocket, &arg1, sizeof(arg1));
+                if (n == -1) {
+                    cout << "Error writing to socket1" << endl;
+                    return;
+                }
+                n = write(clientSocket, &arg2, sizeof(arg2));
+                if (n == -1) {
+                    cout << "Error writing to socket3" << endl;
+                    return;
+                }
+
         }
         player++;
         //if to two players didn't have move -end game
         if (arg1 == -2 && arg2 == -2) {
-            stop();
+          stop();
+          /*  struct sockaddr_in clientAddress;
+            socklen_t clientAddressLen;
+           if(isClientClosed(clientSocket)){
+
+               clientSocket = accept(serverSocket, (struct sockaddr *) &clientAddress, &clientAddressLen);
+            }
+            if(isClientClosed(clientSocket2)){
+                clientSocket2 = accept(serverSocket, (struct sockaddr *) &clientAddress, &clientAddressLen);
+            }*/
             cout<<"Game over"<<endl;
+
         }
     }//end while
 }

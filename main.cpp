@@ -5,20 +5,14 @@
 
 using namespace std;
 
-
-int readFromTextFile(){
-    int port;
-    ifstream infile;
-    infile.open("../server.txt");
-    infile >> port;
-    infile.close();
-    cout<<"port:"<<port<<endl;
-    return port;
-}
-
 int main() {
-    int port;
-    Server server(readFromTextFile());
+    string port;
+    ifstream infile;
+    infile.open("server.txt");
+    getline(infile,port);
+    infile.close();
+    Server server(atoi(port.c_str()));
+    cout<<"port:"<<port<<endl;
     try {
         server.start();
     }

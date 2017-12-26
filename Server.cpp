@@ -160,6 +160,3 @@ void Server::handleClient(int clientSocket,int clientSocket2) {
 }
 
 
-void Server::stop() {
-    close(serverSocket);
-}

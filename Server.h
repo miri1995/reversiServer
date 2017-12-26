@@ -1,12 +1,18 @@
 #ifndef REVERSISERVER_SERVER_H
 #define REVERSISERVER_SERVER_H
 
+#include <vector>
+#include "Game.h"
+#include "CommandsManager.h"
 
 class Server {
 private:
     int port;
     int serverSocket;
-    void handleClient (int clientSocket,int clientSocket2);
+   // vector<Game> games;
+    //CommandsManager manager;
+
+   // void handleClient (int clientSocket,int clientSocket2);
 
 public:
     /**********************************
@@ -34,7 +40,10 @@ public:
     * input: none
     * output: none
     **********************************/
-    void stop();
+
+    void handleClient (int clientSocket,int clientSocket2);
+   // void start(int clientSocket);
+
 };
 
 

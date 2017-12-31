@@ -6,7 +6,7 @@
 #define REVERSISERVER_WHICHCOMMEND_H
 #include"Command.h"
 #include "CloseGame.h"
-#include "CreateGame.h"
+#include "StartGame.h"
 #include "JoinGame.h"
 #include "PlayMove.h"
 #include "ListGames.h"
@@ -19,7 +19,7 @@ public:
              closeGame.execute();
          }
          else if (arg ==2){
-             CreateGame createGame;
+             StartGame createGame;
              ListGames listGames;
              int serverSocket;
              struct sockaddr_in clientAddress;

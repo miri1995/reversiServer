@@ -15,7 +15,8 @@ class CloseGame: public Command{
 
 public:
     virtual void execute(vector <string> args) {
-        args = NULL;
+        //erase game from list
+        args.empty();
        return;
     }
 };

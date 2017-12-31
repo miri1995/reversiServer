@@ -1,24 +1,24 @@
 #include "CommandsManager.h"
-#include "CreateGame.h"
+#include "StartGame.h"
 #include "JoinGame.h"
 #include "PlayMove.h"
 #include "CloseGame.h"
 
 
 CommandsManager::CommandsManager() {
-    commandsMap["start <name>"] = new CreateGame();
+    commandsMap["start"] = new StartGame();
     commandsMap["list_games"] = new ListGames;
-    commandsMap["join <name>"] = new JoinGame;
-    commandsMap["play <x> <y>"] = new PlayMove;
-    commandsMap["close <name>"] = new CloseGame;
+    commandsMap["join"] = new JoinGame;
+   // commandsMap["play <x> <y>"] = new PlayMove;
+    commandsMap["close"] = new CloseGame;
 
 // Add more commands...
 }
 
 
-void CommandsManager ::executeCommand(string command, void* arg) {
+void CommandsManager ::executeCommand(string command, vector<string> args) {
     Command *commandObj = commandsMap[command];
-    commandObj ->execute(arg);
+    commandObj ->execute(args);
 }
 
 

@@ -3,15 +3,17 @@
 #include <netinet/in.h>
 #include <unistd.h>
 #include <string.h>
-#include <iostream>
-#include <stdio.h>
-#include <poll.h>
-
+#include <cstdlib>
+#include <sstream>
+#include "pthread.h"
 using namespace std;
 #define MAX_CONNECTED_CLIENTS 2
 
 Server::Server(int port) : port(port), serverSocket(0){
     cout << "Server" << endl;
+    gameManager = GameManager::getInstance();
+
+
 }
 
 void Server::start() {
@@ -32,21 +34,23 @@ void Server::start() {
     struct sockaddr_in clientAddress;
     socklen_t clientAddressLen;
 
+    //int pthread_create(pthread_t *thread, const pthread_attr_t *attr,void*(*))
     while(true) {
         cout << "Waiting for client connections..." << endl;
-        int clientSocket = accept(serverSocket, (struct sockaddr *) &clientAddress, &clientAddressLen);
+         int clientSocket = accept(serverSocket, (struct sockaddr *) &clientAddress, &clientAddressLen);
         cout << "Client connected" << endl;
         cout << "Waiting for other player to join..." << endl;
         if (clientSocket == -1) {
             throw "Error on accept";
         }
         cout << "Waiting for client connections..." << endl;
-        int clientSocket2 = accept(serverSocket, (struct sockaddr *) &clientAddress, &clientAddressLen);
+
+        /*int clientSocket2 = accept(serverSocket, (struct sockaddr *) &clientAddress, &clientAddressLen);
         cout << "Client connected" << endl;
         if (clientSocket2 == -1) {
             throw "Error on accept";
         }
-        char x = '1';
+                char x = '1';
         char o = '2';
         //write to player x that he is 1
         int message = write(clientSocket, &x, sizeof(x));
@@ -63,13 +67,107 @@ void Server::start() {
 
         handleClient(clientSocket, clientSocket2);
         close(clientSocket);
-        close(clientSocket2);
+        close(clientSocket2);*/
 
+        pthread_t clientThread;
+        int thread = pthread_create(&clientThread, NULL,handleClient,(void*)clientSocket);
+        if(thread){
+            cout<<"Error: unable to create thread, "<< thread<< endl;
+            exit(-1);
+
+         }
+
+        this->clientThreads.push_back(clientThread);
+        pthread_join(clientThread, NULL);//TODO check if need to use join and how
+        close(clientSocket);
     }
 
 }
 
+ void*  Server:: handleClient(void *tArgs) {
+     long clientSocket = (long) tArgs;
+    string command;
+    string name;
+    string str;
 
+    while (true) {
+
+        while(str.compare('\0')){
+            int n = read(clientSocket, &str, sizeof(str));
+            if (n == -1) {
+                cout << "Error reading arg1" << endl;
+                return (void*)-1;
+            }
+            if (n == 0) {
+                cout << "Client disconnected" << endl;
+                return (void*)0;
+            }
+        }
+
+        //split the client input
+        int i = 0;
+        const char* str_c = str.c_str();
+        string arr[strlen(str_c)];
+        stringstream ssin(str);
+        while (ssin.good() && i < strlen(str_c)){
+            ssin >> arr[i];
+            ++i;
+        }
+        command = arr[0]; //the command
+        name = arr[1]; //the name of the game
+        vector<string> args;
+        args.push_back(name);
+
+         pthread_mutex_trylock(&this->gamesMutex);
+        commandsManager.executeCommand(command,args);
+        pthread_mutex_unlock(&this->gamesMutex);
+
+        // in case command is start check if the game was created or not
+        // and set the new game accordingly
+        if (command == "start" && !ifGameCreated(name)) {
+            Game game = Game(name);
+            pthread_mutex_trylock(&this->gamesMutex);
+            if(!game.isJoinable()){ // get "updated" game from game manager and check if not joinable (game should start)
+                char x = '1';
+                //write to player x that he is 1
+                int message = write(clientSocket, &x, sizeof(x));
+                if (message == -1) {
+                    cout << "Error writing to socket" << endl;
+                    return (void*)-1;
+                }
+            }
+            pthread_mutex_unlock(&this->gamesMutex);
+        }
+        else if(command == "join"){
+            pthread_mutex_trylock(&this->gamesMutex);
+            char o = '2';
+            int message = write(clientSocket, &o, sizeof(o));
+            if (message == -1) {
+                cout << "Error writing to socket" << endl;
+                return (void*)-1;
+            }
+            pthread_mutex_unlock(&this->gamesMutex);
+        }
+    }
+}
+
+
+bool Server::ifGameCreated(string name) {
+    vector<Game> games = gameManager->getGames();
+    for (int i = 0; i < games.size(); i++) {
+        if (name == games.at(i).getName()) {
+            Game game = Game(name);
+            return true;
+        }
+    }
+    return false;
+}
+
+
+
+
+
+/*
 void Server::handleClient(int clientSocket,int clientSocket2) {
     int arg1, arg2;
     int player = 1;
@@ -157,6 +255,30 @@ void Server::handleClient(int clientSocket,int clientSocket2) {
             return;
         }
     }//end while
-}
+}*/
 
 
+/*string str;
+       int n = read(clientSocket,&str,sizeof(str));
+       if (n == -1) {
+           cout << "Error reading arg1" << endl;
+           return;
+       }
+       if (n == 0) {
+           cout << "Client disconnected" << endl;
+           return;
+       }*/
+
+/* string str1;
+       n = read(clientSocket,&str1,sizeof(str1));
+       if (n == -1) {
+           cout << "Error reading arg1" << endl;
+           return;
+       }
+       if (n == 0) {
+           cout << "Client disconnected" << endl;
+           return;
+       }*/
+/*int Server::getClientSocket(){
+    return this->clientSocket;
+}*/

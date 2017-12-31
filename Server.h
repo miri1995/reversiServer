@@ -4,13 +4,18 @@
 #include <vector>
 #include "Game.h"
 #include "CommandsManager.h"
-
+#include "GameManager.h"
+class CommandsManager;
 class Server {
 private:
     int port;
     int serverSocket;
-   // vector<Game> games;
-    //CommandsManager manager;
+    vector<pthread_t> clientThreads;
+    pthread_mutex_t gamesMutex;
+    CommandsManager commandsManager;
+    GameManager *gameManager;
+
+
 
    // void handleClient (int clientSocket,int clientSocket2);
 
@@ -41,8 +46,11 @@ public:
     * output: none
     **********************************/
 
-    void handleClient (int clientSocket,int clientSocket2);
+    //void handleClient (int clientSocket);
+     void* handleClient(void *tArgs);
+    int getClientSocket();
    // void start(int clientSocket);
+   bool ifGameCreated(string name);
 
 };
 

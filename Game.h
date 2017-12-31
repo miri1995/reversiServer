@@ -1,7 +1,3 @@
-//
-// Created by michalbi on 22/12/17.
-//
-
 #ifndef REVERSISERVER_GAME_H
 #define REVERSISERVER_GAME_H
 #include <iostream>
@@ -11,10 +7,12 @@ using namespace std;
 class Game {
 private:
     string name;
-   // int clientSocket;
+    bool joinable;
 public:
     Game(string name);
     string getName();
+    void setJoinable(bool joinable);
+    bool  isJoinable();
 
 
 };

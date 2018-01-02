@@ -6,12 +6,16 @@
 
 class CommandsManager {
 public:
-    CommandsManager();
-    ~CommandsManager();
-    void executeCommand(string command, vector <string> args);
-    //std::map getMap();
+    static CommandsManager *getInstance();
+    void executeCommand(string command, vector <string> args,int socket = 0);
+
 private:
-    map<string, Command *> commandsMap;
+    CommandsManager();
+    CommandsManager(const CommandsManager &other);
+    ~CommandsManager();
+   static CommandsManager* instance;
+    static pthread_mutex_t lock;
+    map<string,Command *> commandsMap;
 
 };
 

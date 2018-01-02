@@ -5,16 +5,22 @@
 #include "Game.h"
 #include "CommandsManager.h"
 #include "GameManager.h"
-class CommandsManager;
+/*class CommandsManager;
+struct manager{
+    CommandsManager commandsManager;
+    int clientSocket;
+    //string name;
+};*/
+
 class Server {
 private:
     int port;
     int serverSocket;
-    vector<pthread_t> clientThreads;
-    pthread_mutex_t gamesMutex;
-    CommandsManager commandsManager;
-    GameManager *gameManager;
+   pthread_t serverThread;
+   // CommandsManager commandsManager;
 
+
+   //
 
 
    // void handleClient (int clientSocket,int clientSocket2);
@@ -47,10 +53,11 @@ public:
     **********************************/
 
     //void handleClient (int clientSocket);
-     void* handleClient(void *tArgs);
-    int getClientSocket();
+    static void* handleClient(void *tArgs);
+    void stop();
+    //int getClientSocket();
    // void start(int clientSocket);
-   bool ifGameCreated(string name);
+  // bool ifGameCreated(string name);
 
 };
 

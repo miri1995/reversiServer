@@ -14,8 +14,8 @@
 class PlayMove: public Command{
 
 public:
-    virtual void execute(Server server, int clientSocket,int clientSocket2) {
-       server.handleClient(clientSocket,clientSocket2);
+    virtual void execute(vector<string>args,int socket=0) {
+       //server.handleClient(clientSocket,clientSocket2);
     }
 };
 

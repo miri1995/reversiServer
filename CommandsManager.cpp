@@ -5,6 +5,23 @@
 #include "CloseGame.h"
 
 
+
+CommandsManager* CommandsManager::instance = 0;
+pthread_mutex_t CommandsManager::lock;
+
+CommandsManager* CommandsManager::getInstance() {
+    if(instance == 0){
+        pthread_mutex_lock(&lock);
+        if(instance == 0){
+            instance = new CommandsManager();
+        }
+        pthread_mutex_unlock(&lock);
+    }
+    return instance;
+}
+
+
+
 CommandsManager::CommandsManager() {
     commandsMap["start"] = new StartGame();
     commandsMap["list_games"] = new ListGames;
@@ -16,9 +33,9 @@ CommandsManager::CommandsManager() {
 }
 
 
-void CommandsManager ::executeCommand(string command, vector<string> args) {
+void CommandsManager ::executeCommand(string command, vector<string> args, int socket) {
     Command *commandObj = commandsMap[command];
-    commandObj ->execute(args);
+    commandObj ->execute(args,socket);
 }
 
 
@@ -27,8 +44,4 @@ CommandsManager::~CommandsManager() {
     for (it = commandsMap.begin(); it != commandsMap.end(); it++) {
         delete it ->second;
     }
-
-    /* map CommandsManager::getMap() {
-         return commandsMap;
-     } */
 }

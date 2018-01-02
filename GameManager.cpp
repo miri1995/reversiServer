@@ -16,10 +16,12 @@ GameManager *GameManager::getInstance()
 
 
 
-GameManager::~GameManager() {
-    if (instance != 0)
-        delete instance;
-}
+/*GameManager::~GameManager() {
+
+    for (int i=0; i<games.size();i++) {
+        delete games.at(i);
+    }
+}*/
 
 vector<Game> GameManager:: getGames(){
     return games;
@@ -49,4 +51,15 @@ int GameManager:: gameIndex(string name){
         }
     }
     return -1;
+}
+
+
+bool GameManager::ifGameCreated(string name) {
+    vector<Game> games = getGames();
+    for (int i = 0; i < games.size(); i++) {
+        if (name == games.at(i).getName()) {
+            return true;
+        }
+    }
+    return false;
 }

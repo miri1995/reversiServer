@@ -16,22 +16,8 @@ class JoinGame: public Command {
 
 
 public:
-    virtual void execute(vector<string>args) {
-        GameManager *gameManager;
-        gameManager = GameManager::getInstance();
-        vector<Game> games = gameManager->getGames();
-        string name = args[0];
-        int gameIndex = gameManager->gameIndex(name);
-        if(gameIndex == -1){
-            cout<<-1<<endl;
-            return;
-        }
-        Game game = games.at(gameIndex);
-        if(game.isJoinable()){
-            game.setJoinable(false);// make sure that state of game in games member of game manager is false
-        }
-
-    }
+    JoinGame();
+    virtual void execute(vector<string>args, int socket);
 };
 
 

@@ -13,7 +13,7 @@ public:
     void addGame(Game game);
     void removeGame(string name);
     int gameIndex(string name);
-
+    bool ifGameCreated(string name);
 
 
 private:

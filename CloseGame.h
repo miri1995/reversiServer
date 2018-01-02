@@ -14,12 +14,16 @@
 class CloseGame: public Command{
 
 public:
-    virtual void execute(vector <string> args) {
-        //erase game from list
-        args.empty();
-       return;
+    virtual void execute(vector <string> args,int socket) {
+        GameManager *gameManager;
+        gameManager = GameManager::getInstance();
+        vector<Game> games = gameManager->getGames();
+        string name = args[0];
+        gameManager->removeGame(name);
+        return;
     }
 };
+
 
 
 

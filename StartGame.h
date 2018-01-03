@@ -15,8 +15,13 @@
 
 class StartGame: public Command {
 
-
 public:
+    /**********************************
+    * constructor
+    *
+    * input: none
+    * output: none
+    **********************************/
     StartGame();
     virtual void execute(vector<string>args,int socket);
 
@@ -26,4 +31,3 @@ public:
 
 
 #endif //REVERSISERVER_PRINTCOMMAND_H
-

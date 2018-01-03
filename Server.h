@@ -5,25 +5,12 @@
 #include "Game.h"
 #include "CommandsManager.h"
 #include "GameManager.h"
-/*class CommandsManager;
-struct manager{
-    CommandsManager commandsManager;
-    int clientSocket;
-    //string name;
-};*/
 
 class Server {
 private:
     int port;
     int serverSocket;
-   pthread_t serverThread;
-   // CommandsManager commandsManager;
-
-
-   //
-
-
-   // void handleClient (int clientSocket,int clientSocket2);
+    pthread_t serverThread;
 
 public:
     /**********************************
@@ -51,13 +38,8 @@ public:
     * input: none
     * output: none
     **********************************/
-
-    //void handleClient (int clientSocket);
-    static void* handleClient(void *tArgs);
     void stop();
-    //int getClientSocket();
-   // void start(int clientSocket);
-  // bool ifGameCreated(string name);
+
 
 };
 

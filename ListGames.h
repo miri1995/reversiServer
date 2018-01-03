@@ -12,6 +12,11 @@ class ListGames: public Command{
 
 
 public:
+/**********************************
+   * constructor
+   * input: none
+   * output: none
+**********************************/
     ListGames();
     virtual void execute(vector<string>args,int socket=0) ;
 

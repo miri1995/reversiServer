@@ -1,8 +1,8 @@
 #include "CommandsManager.h"
 #include "StartGame.h"
 #include "JoinGame.h"
-#include "PlayMove.h"
-#include "CloseGame.h"
+
+
 
 
 
@@ -26,8 +26,8 @@ CommandsManager::CommandsManager() {
     commandsMap["start"] = new StartGame();
     commandsMap["list_games"] = new ListGames;
     commandsMap["join"] = new JoinGame;
-   // commandsMap["play <x> <y>"] = new PlayMove;
-    commandsMap["close"] = new CloseGame;
+
+    //commandsMap["close"] = new CloseGame;
 
 // Add more commands...
 }
@@ -45,3 +45,4 @@ CommandsManager::~CommandsManager() {
         delete it ->second;
     }
 }
+

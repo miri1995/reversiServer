@@ -10,7 +10,17 @@ using namespace std;
 
 class Command {
 public:
+/**********************************
+       * name: execute the client's command.
+       * input:none
+       * output: none
+**********************************/
     virtual void execute(vector<string> args,int socket = 0) =0;
+    /**********************************
+    *destructor.
+    * input: port
+    * output: none
+**********************************/
       virtual~Command() {};
 };
 

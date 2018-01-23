@@ -12,12 +12,12 @@ public:
        * output: command manager
 **********************************/
     static CommandsManager *getInstance();
- /**********************************
-       * name: executeCommand.
-       * input:command,args,socket
-       * output: none
-       * execute the given command by the client according to the map.
-**********************************/
+    /**********************************
+          * name: executeCommand.
+          * input:command,args,socket
+          * output: none
+          * execute the given command by the client according to the map.
+   **********************************/
     void executeCommand(string command, vector <string> args,int socket = 0);
 
 

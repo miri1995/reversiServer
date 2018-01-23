@@ -1,15 +1,17 @@
 #include <sys/socket.h>
 #include "Server.h"
+#include "ThreadPool.h"
 #include <netinet/in.h>
 #include <unistd.h>
 #include <string.h>
 #include <cstdlib>
 #include <sstream>
-#include "pthread.h"
+
 using namespace std;
 
 #define MAX_CONNECTED_CLIENTS 10
 #define MAX_COMMAND_LEN 20
+#define THREADS_NUM 5
 
 
 static void *acceptClients(void *);
@@ -48,6 +50,7 @@ static void *acceptClients(void* socket){
     long serverSocket = (long) socket;
     struct sockaddr_in clientAddress;
     socklen_t clientAddressLen = sizeof(clientAddress);
+    ThreadPool pool(THREADS_NUM);
     while(true) {
         cout << "Waiting for client connections..." << endl;
         int clientSocket = accept(serverSocket, (struct sockaddr *) &clientAddress, &clientAddressLen);
@@ -55,12 +58,8 @@ static void *acceptClients(void* socket){
         if (clientSocket == -1) {
             throw "Error on accept";
         }
-        pthread_t clientThread;
-        int thread = pthread_create(&clientThread, NULL,&handleClient,(void*)clientSocket);
-        if(thread){
-            cout<<"Error: unable to create thread, "<< thread<< endl;
-            exit(-1);
-        }
+        Task *task = new Task(handleClient, (void *)clientSocket);
+        pool.addTask(task);
 
     }
 

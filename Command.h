@@ -21,7 +21,7 @@ public:
     * input: port
     * output: none
 **********************************/
-      virtual~Command() {};
+    virtual~Command() {};
 };
 
 

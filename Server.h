@@ -12,6 +12,7 @@ private:
     int serverSocket;
     pthread_t serverThread;
 
+
 public:
     /**********************************
     * constructor

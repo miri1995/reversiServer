@@ -8,7 +8,7 @@ using namespace std;
 int main() {
     string port;
     ifstream infile;
-    infile.open("server.txt");
+    infile.open("../server.txt");
     getline(infile,port);
     infile.close();
     Server server(atoi(port.c_str()));
